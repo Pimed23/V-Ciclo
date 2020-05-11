@@ -19,7 +19,7 @@ int main() {
     bool number = 0, word = 0, special = 0, unknown = 0;
     while(( character = fgetc( file )) != EOF ) {
         printf( "%c \n", character );
-        if( character == ' ' || character == '\t' || character == ' ' )
+        if( character == ' ' || character == '\t' || character == '\n' )
             break;
 
         if( character >= 48 && character <= 57 ) {
