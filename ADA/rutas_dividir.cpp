@@ -1,3 +1,10 @@
+///////////////////////////////////////////////////////////
+////                                                   ////
+////    Codigo realizado por: Brian Pinto Medina       ////
+////    GitHub: https://github.com/Pimed23/ADA.git     ////
+////                                                   ////
+///////////////////////////////////////////////////////////
+
 #include <stdio.h>
 #include <algorithm>
 using namespace std;
