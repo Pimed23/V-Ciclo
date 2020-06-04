@@ -1,9 +1,9 @@
-///////////////////////////////////////////////////////////
-////                                                   ////
-////    Codigo realizado por: Brian Pinto Medina       ////
-////    GitHub: https://github.com/Pimed23/ADA.git     ////
-////                                                   ////
-///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+////                                                   		           ////
+////    Codigo realizado por: Brian Wilbert Pinto Medina               ////
+////    GitHub: https://github.com/Pimed23/V-Ciclo/tree/master/ADA     ////
+////                                                   		           ////
+///////////////////////////////////////////////////////////////////////////
 
 #include <stdio.h>
 #include <algorithm>
