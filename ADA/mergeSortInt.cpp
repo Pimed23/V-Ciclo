@@ -9,8 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-#define ull unsigned long long 
+#include <vector>
+#include <algorithm>
 
 ///////////////////////////////////////////////////////////
 /////////////// DECLARACION DE SIMPLEARRAY ////////////////
@@ -23,14 +23,18 @@ class SimpleArray {
         SimpleArray( const SimpleArray& ); 
         ~SimpleArray();
 
-        void insertSort();
         void mergeSort();
+        void mergeSortDes();
         void fillRandArray();
         void printArray();
+        void quickSort();
 
     private:
-        void merge( int, int, int );
+        void intercala( int, int, int );
+        void intercalaDes( int, int, int );
         void mergeSort( int, int );
+        void mergeSortDes( int, int );
+
         int size;
         int *arr;
 };
@@ -42,19 +46,24 @@ class SimpleArray {
 int main() {
     FILE *arch;
     arch = fopen( "timeSorting.txt", "wt" );
+    
+    int numElem;
+    printf("Numero de elementos a ordenar: "); 
+    scanf( "%i", &numElem );
 
-    srand( time( NULL )) ;
-    for( int i = 1; i < 1001; ++i ) {
+    srand( time( NULL ));
+    
+    for( int i = 1; i < numElem + 1; ++i ) {
         unsigned int time0, time1;
         unsigned int timeMS0, timeMS1;
-        unsigned int timeIS0, timeIS1;
-        double timeCreation, timeMerge, timeInsert;
+        unsigned int timeQS0, timeQS1;
+        double timeCreation, timeMerge, timeQuick;
         int nElem = i;
         
         time0 = clock();
         SimpleArray A( nElem ); 
         A.fillRandArray();
-        A.insertSort();
+        A.mergeSortDes();
         time1 = clock();
         timeCreation = double( time1 - time0 ) / CLOCKS_PER_SEC;
         
@@ -66,24 +75,22 @@ int main() {
         timeMS1 = clock();
         timeMerge = double( timeMS1 - timeMS0 ) / CLOCKS_PER_SEC;
         
-        timeIS0 = clock();
-        C.insertSort();
-        timeIS1 = clock();
-        timeInsert = double( timeIS1 - timeIS0 ) / CLOCKS_PER_SEC;
+        timeQS0 = clock();
+        C.quickSort();
+        timeQS1 = clock();
+        timeQuick = double( timeQS1 - timeQS0 ) / CLOCKS_PER_SEC;
 
         //printf("\nARRAY OF %i ELEMENTS\n", nElem );
-        //printf("Creation time: %lf\n", timeCreation );
-        fprintf( arch, "%lf\t", timeCreation );
         //printf("\nMERGE SORT\n");
         //printf("Ordering time: %lf\n", timeMerge );
         fprintf( arch, "%lf\t", timeMerge );
-        //printf("\nINSERT SORT\n");
-        //printf("Ordering time: %lf\n", timeInsert );
-        fprintf( arch, "%lf\n", timeInsert );
+        //printf("\nQUICK SORT\n");
+        //printf("Ordering time: %lf\n", timeQuick );
+        fprintf( arch, "%lf\n", timeQuick );
     }
+    
     fclose( arch );
 
-    return 0;
 }
 
 ///////////////////////////////////////////////////////////
@@ -129,42 +136,29 @@ void SimpleArray::printArray() {
     printf("\n");
 }
 
-// InsertSort //
-void SimpleArray::insertSort() { 
-    for ( int i = 1, j, k; i < size; ++i ) {
-        k = arr[ i ];
-        j = i - 1; 
-
-        while ( j >= 0 && arr[ j ] > k ) {  
-            arr[ j + 1 ] = arr[ j ];
+// Intercala //
+void SimpleArray::intercala( int p, int q, int r ) {
+    int B[ size ];
+    int i, j, k;
+    
+    for( i = p; i <= q; ++i )
+        B[ i ] = arr[ i ];
+    
+    for( j = q + 1; j <= r; ++j ) 
+        B[ r + q + 1 - j ] = arr[ j ];
+    
+    i = p;
+    j = r;
+    
+    for( k = p; k <= r; ++k ) {
+        if( B[ i ] <= B[ j ]) {
+            arr[ k ] = B[ i ];
+            ++i;
+        } else {
+            arr[ k ] = B[ j ];
             --j;
-        } 
-        arr[ j + 1 ] = k;
-    } 
-}
-
-// Merge //
-void SimpleArray::merge( int left, int mid, int right ) {
-    int *temp = new int[ right - left + 1 ];
-    int i = left;
-    int j = mid + 1;
-    int k = 0;
-
-    while( i <= mid && j <= right ) {
-        if( arr[ i ] <= arr[ j ])
-            temp[ k++ ] = arr[ i++ ];
-        else
-            temp[ k++ ] = arr[ j++ ];
+        }
     }
-
-    while( i <= mid )
-        temp[ k++ ] = arr[ i++ ];
-    while( j <= right )
-        temp[ k++ ] = arr[ j++ ];
-    for( k = 0, i = left; i <= right; ++i, ++k )
-        arr[ i ] = temp[ k ];
- 
-    delete[] temp;
 }
 
 // MergeSort //
@@ -174,11 +168,58 @@ void SimpleArray::mergeSort() {
 
 // MergeSort //
 void SimpleArray::mergeSort( int left, int right ) {
-    int mid = ( left + right ) / 2;
-
     if( left < right ) {
+        int mid = ( left + right ) / 2;
+
         mergeSort( left, mid );
         mergeSort( mid + 1, right );
-        merge( left, mid, right );
+        intercala( left, mid, right );
     }
+}
+
+// MergeSort //
+void SimpleArray::mergeSortDes() {
+    mergeSortDes( 0, size - 1 );
+}
+
+// MergeSort //
+void SimpleArray::mergeSortDes( int left, int right ) {
+    if( left < right ) {
+        int mid = ( left + right ) / 2;
+
+        mergeSortDes( left, mid );
+        mergeSortDes( mid + 1, right );
+        intercalaDes( left, mid, right );
+    }
+}
+
+// Intercala //
+void SimpleArray::intercalaDes( int p, int q, int r ) {
+    int B[ size ];
+    int i, j, k;
+    
+    for( i = p; i <= q; ++i )
+        B[ i ] = arr[ i ];
+    
+    for( j = q + 1; j <= r; ++j ) 
+        B[ r + q + 1 - j ] = arr[ j ];
+    
+    i = p;
+    j = r;
+    
+    for( k = p; k <= r; ++k ) {
+        if( B[ i ] >= B[ j ]) {
+            arr[ k ] = B[ i ];
+            ++i;
+        } else {
+            arr[ k ] = B[ j ];
+            --j;
+        }
+    }
+}
+
+
+// QuickSort //
+void SimpleArray::quickSort() {
+    std::sort( arr, arr + size );
 }
